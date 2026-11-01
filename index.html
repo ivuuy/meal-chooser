@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天吃什么</title>
+    <meta
+      name="description"
+      content="根据预算、时间和现有食材，快速推荐今天可以做的一餐。"
+    />
+    <link rel="preconnect" href="https://picsum.photos" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="brand">今天吃什么</p>
+          <h1 id="page-title">把纠结变成一桌菜。</h1>
+          <p class="intro">
+            输入预算、可用时间和手头食材，马上得到适合今天的菜单。
+          </p>
+        </div>
+        <div class="hero-media" aria-hidden="true">
+          <img
+            src="https://picsum.photos/seed/weeknight-noodles/960/720"
+            alt=""
+            width="960"
+            height="720"
+          />
+        </div>
+      </section>
+
+      <section class="planner" aria-label="菜单推荐器">
+        <form class="panel form-panel" id="meal-form" novalidate>
+          <div class="field-row">
+            <label for="budget">预算</label>
+            <div class="money-input">
+              <span>¥</span>
+              <input
+                id="budget"
+                name="budget"
+                type="number"
+                min="8"
+                max="300"
+                step="1"
+                value="35"
+                inputmode="decimal"
+              />
+            </div>
+            <p class="helper">单人一餐大概花费，可填 8 到 300。</p>
+          </div>
+
+          <div class="field-row">
+            <label for="time">做饭时间</label>
+            <div class="range-line">
+              <input id="time" name="time" type="range" min="8" max="90" value="25" />
+              <output for="time" id="time-output">25 分钟</output>
+            </div>
+            <p class="helper">包含备菜和烹饪时间。</p>
+          </div>
+
+          <div class="field-row">
+            <label for="ingredients">现有食材</label>
+            <textarea
+              id="ingredients"
+              name="ingredients"
+              rows="4"
+              placeholder="例如：鸡蛋、西红柿、米饭、青菜"
+            ></textarea>
+            <p class="helper">用逗号、空格或换行分隔。写得越具体，推荐越准。</p>
+          </div>
+
+          <fieldset class="field-row">
+            <legend>偏好</legend>
+            <div class="chips" role="group" aria-label="口味偏好">
+              <label><input type="radio" name="taste" value="any" checked /> 不挑</label>
+              <label><input type="radio" name="taste" value="light" /> 清淡</label>
+              <label><input type="radio" name="taste" value="spicy" /> 微辣</label>
+              <label><input type="radio" name="taste" value="comfort" /> 顶饱</label>
+            </div>
+          </fieldset>
+
+          <p class="error-message" id="form-error" role="alert"></p>
+
+          <div class="actions">
+            <button class="primary-button" type="submit">推荐菜单</button>
+            <button class="ghost-button" type="button" id="surprise-button">随机灵感</button>
+          </div>
+        </form>
+
+        <section class="panel result-panel" aria-live="polite" aria-labelledby="result-title">
+          <div class="empty-state" id="empty-state">
+            <p class="empty-title">晚饭还没定。</p>
+            <p>把预算、时间和食材填好，我会按“能做、划算、省事”的顺序推荐。</p>
+          </div>
+
+          <div class="loading-state is-hidden" id="loading-state" aria-hidden="true">
+            <div class="skeleton image"></div>
+            <div class="skeleton line wide"></div>
+            <div class="skeleton line"></div>
+            <div class="skeleton grid"></div>
+          </div>
+
+          <article class="recommendation is-hidden" id="recommendation">
+            <div class="dish-photo-wrap">
+              <img id="dish-photo" src="" alt="" width="760" height="520" />
+            </div>
+
+            <div class="result-heading">
+              <p class="match-label" id="match-label">匹配推荐</p>
+              <h2 id="result-title"></h2>
+              <p id="result-summary"></p>
+            </div>
+
+            <div class="stats" aria-label="推荐信息">
+              <div>
+                <span>预计花费</span>
+                <strong id="result-cost"></strong>
+              </div>
+              <div>
+                <span>用时</span>
+                <strong id="result-time"></strong>
+              </div>
+              <div>
+                <span>难度</span>
+                <strong id="result-level"></strong>
+              </div>
+            </div>
+
+            <div class="result-grid">
+              <div>
+                <h3>已有食材</h3>
+                <ul id="owned-list"></ul>
+              </div>
+              <div>
+                <h3>建议补齐</h3>
+                <ul id="shopping-list"></ul>
+              </div>
+            </div>
+
+            <div class="steps">
+              <h3>做法</h3>
+              <ol id="steps-list"></ol>
+            </div>
+
+            <button class="secondary-button" type="button" id="another-button">换一道</button>
+          </article>
+        </section>
+      </section>
+
+      <section class="ideas" aria-label="常用灵感">
+        <h2>少买一点，也能吃得像样。</h2>
+        <div class="idea-grid">
+          <article>
+            <img
+              src="https://picsum.photos/seed/tomato-eggs-rice/640/480"
+              alt="番茄鸡蛋饭"
+              width="640"
+              height="480"
+            />
+            <h3>有蛋和主食</h3>
+            <p>优先做盖饭、炒饭、汤面。快，失败率低。</p>
+          </article>
+          <article>
+            <img
+              src="https://picsum.photos/seed/green-vegetable-soup/640/480"
+              alt="青菜汤面"
+              width="640"
+              height="480"
+            />
+            <h3>只有蔬菜</h3>
+            <p>加豆腐、鸡蛋或面条，十几分钟能变成正餐。</p>
+          </article>
+          <article>
+            <img
+              src="https://picsum.photos/seed/chicken-bowl-dinner/640/480"
+              alt="鸡肉碗饭"
+              width="640"
+              height="480"
+            />
+            <h3>预算宽一点</h3>
+            <p>买一份蛋白质，搭配现有蔬菜和主食。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
